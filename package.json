@@ -1,0 +1,39 @@
+{
+  "name": "prettier-plugin-gap",
+  "description": "Prettier plugin for gap",
+  "version": "0.0.0",
+  "author": {
+    "name": "Reinis Cirpons",
+    "email": "rc234@st-andrews.ac.uk",
+    "url": "https://reinisc.id.lv"
+  },
+  "license": "MIT",
+  "keywords": [
+    "prettier",
+    "plugin",
+    "gap",
+    "gap-system"
+  ],
+  "homepage": "https://github.com/reiniscirpons/prettier-plugin-gap/",
+  "issues": {
+    "url": "https://github.com/reiniscirpons/prettier-plugin-gap/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reiniscirpons/prettier-plugin-gap.git"
+  },
+  "dependencies": {
+    "prettier": "^3.4.2",
+    "tree-sitter": "^0.22.4",
+    "tree-sitter-gap": "git://github.com/gap-system/tree-sitter-gap.git#v0.3.1"
+  },
+  "scripts": {
+    "test": "mocha ./test/**/**.js"
+  },
+  "main": "src/index.js",
+  "type": "module",
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "mocha": "^11.0.1"
+  }
+}
