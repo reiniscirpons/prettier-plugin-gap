@@ -1,5 +1,9 @@
 - [x] Migrate to typescript
 - [x] Migrate to sane testing framework
+- [ ] Implement node types
+- [ ] Write proxy for wrapping AST
+  - [ ] Gather comments separately
+- [ ] Update readme
 
 Nodes by frequency (should probably be addressed in orderish)
 
@@ -10,11 +14,11 @@ Nodes by frequency (should probably be addressed in orderish)
 - [x] 'argument_list': 889982,
 - [x] 'binary_expression': 765236,
 - [ ] 'comment': 619116,
-- [ ] 'assignment_statement': 357638,
-- [ ] 'string_start': 356661,
-- [ ] 'string': 356659,
-- [ ] 'string_end': 356659,
-- [ ] 'string_content': 353682,
+- [x] 'assignment_statement': 357638,
+- [x] 'string_start': 356661,
+- [x] 'string': 356659,
+- [x] 'string_end': 356659,
+- [x] 'string_content': 353682,
 - [ ] 'permutation_cycle_expression': 305835,
 - [ ] 'list_selector': 253898,
 - [ ] 'unary_expression': 163959,

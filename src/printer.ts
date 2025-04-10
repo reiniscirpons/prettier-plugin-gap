@@ -5,6 +5,9 @@ const { join, line, softline, indent, dedent, fill, group, literalline } =
 
 export type PrintFn = (path: AstPath) => Doc;
 
+// Graham
+// Parsing grammar
+
 export function print(
   path: AstPath,
   options: ParserOptions,
@@ -54,6 +57,13 @@ export function print(
         path.map(print, "children"),
         node.children.findIndex((child: SyntaxNode) => child.type == ":="),
       );
+    case "string":
+      return node.text;
+    case "permutation_cycle_expression":
+      // TODO: Maybe print this slightly differently?
+      return printListExpression(path.map(print, "children"), true);
+    case "permutation_expression":
+      return fill(path.map(print, "children"));
   }
   return node.text;
 }
