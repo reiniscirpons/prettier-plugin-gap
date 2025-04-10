@@ -64,6 +64,14 @@ export function print(
       return printListExpression(path.map(print, "children"), true);
     case "permutation_expression":
       return fill(join(softline, path.map(print, "children")));
+    case "list_selector":
+      return printListSelector(
+        path.map(print, "children"),
+        // First "[" before selector
+        node.children
+          .slice(0, findFieldIndex(node, "selector"))
+          .findLastIndex((child: SyntaxNode) => child.type == "["),
+      );
   }
   return node.text;
 }
@@ -188,4 +196,14 @@ function printAssignmentStatement(
     " ",
     child_docs.slice(operator_position + 1),
   ]);
+}
+
+function printListSelector(
+  child_docs: Doc[],
+  opening_bracket_position: number,
+): Doc {
+  return [
+    child_docs.slice(0, opening_bracket_position),
+    printListExpression(child_docs.slice(opening_bracket_position), false),
+  ];
 }
