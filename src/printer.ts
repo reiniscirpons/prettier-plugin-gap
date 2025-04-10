@@ -63,7 +63,7 @@ export function print(
       // TODO: Maybe print this slightly differently?
       return printListExpression(path.map(print, "children"), true);
     case "permutation_expression":
-      return fill(path.map(print, "children"));
+      return fill(join(softline, path.map(print, "children")));
   }
   return node.text;
 }
