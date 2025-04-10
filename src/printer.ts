@@ -161,7 +161,7 @@ function printArgumentExpression(
 
 function printUnaryExpression(child_docs: Doc[], separate: boolean): Doc {
   if (separate) {
-    return [child_docs[0], line, child_docs.slice(1)];
+    return group([child_docs[0], " ", child_docs.slice(1)]);
   }
   return child_docs;
 }

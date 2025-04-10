@@ -21,7 +21,7 @@ Nodes by frequency (should probably be addressed in orderish)
 - [x] 'string_content': 353682,
 - [x] 'permutation_cycle_expression': 305835,
 - [x] 'list_selector': 253898,
-- [ ] 'unary_expression': 163959,
+- [x] 'unary_expression': 163959,
 - [ ] 'if_statement': 106179,
 - [ ] 'bool': 97760,
 - [ ] 'record_selector': 93171,
