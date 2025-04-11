@@ -1,7 +1,16 @@
 import { Doc, doc, AstPath, ParserOptions } from "prettier";
 import { SyntaxNode } from "tree-sitter";
-const { join, line, softline, indent, dedent, fill, group, literalline } =
-  doc.builders;
+const {
+  join,
+  line,
+  softline,
+  hardline,
+  indent,
+  dedent,
+  fill,
+  group,
+  literalline,
+} = doc.builders;
 
 export type PrintFn = (path: AstPath) => Doc;
 
@@ -17,9 +26,9 @@ export function print(
   // console.log(node.type);
   switch (node.type) {
     case "source_file":
-      return group(path.map(print, "children"), { shouldBreak: true });
-    case ";":
-      return [";", literalline];
+      return group(addSemicolonSeparators(path.map(print, "children"), true), {
+        shouldBreak: true,
+      });
     case ",":
       if (node.nextSibling === null || node.nextSibling.type == ",")
         return [","];
@@ -72,8 +81,44 @@ export function print(
           .slice(0, findFieldIndex(node, "selector"))
           .findLastIndex((child: SyntaxNode) => child.type == "["),
       );
+    case "if_statement":
+      const condition_index_1 = findFieldLastIndex(node, "condition");
+      return printIfStatement(
+        path.map(print, "children"),
+        // First "then" before body
+        condition_index_1 +
+        node.children
+          .slice(condition_index_1)
+          .findIndex((child: SyntaxNode) => child.type == "then"),
+      );
+    case "elif_clause":
+      const condition_index_2 = findFieldLastIndex(node, "condition");
+      return printElifClause(
+        path.map(print, "children"),
+        // First "then" before body
+        condition_index_2 +
+        node.children
+          .slice(condition_index_2)
+          .findIndex((child: SyntaxNode) => child.type == "then"),
+      );
+    case "else_clause":
+      return printElseClause(path.map(print, "children"));
+    case "return_statement":
+      return printReturnStatement(path.map(print, "children"));
   }
   return node.text;
+}
+
+function addSemicolonSeparators(docs: Doc[], include_last: boolean): Doc[] {
+  const last_semicolon_index = docs.findLastIndex((doc: Doc) => doc == ";");
+  if (last_semicolon_index == -1) {
+    return docs;
+  }
+  return docs.map((doc: Doc, index: number) =>
+    doc == ";" && (include_last || index != last_semicolon_index)
+      ? [";", hardline]
+      : doc,
+  );
 }
 
 function findFieldIndex(node: SyntaxNode, field_name: string): number {
@@ -82,6 +127,16 @@ function findFieldIndex(node: SyntaxNode, field_name: string): number {
     return -1;
   }
   return node.children.findIndex(
+    (child: SyntaxNode) => child.id == field_child.id,
+  );
+}
+
+function findFieldLastIndex(node: SyntaxNode, field_name: string): number {
+  const field_child = node.childForFieldName(field_name);
+  if (field_child == null) {
+    return -1;
+  }
+  return node.children.findLastIndex(
     (child: SyntaxNode) => child.id == field_child.id,
   );
 }
@@ -202,8 +257,112 @@ function printListSelector(
   child_docs: Doc[],
   opening_bracket_position: number,
 ): Doc {
+  if (opening_bracket_position == -1) {
+    throw new Error("Wrong opening bracket index specified in list selector!");
+  }
   return [
     child_docs.slice(0, opening_bracket_position),
     printListExpression(child_docs.slice(opening_bracket_position), false),
   ];
+}
+
+function printIfStatement(child_docs: Doc[], then_position: number): Doc {
+  if (then_position == -1) {
+    throw new Error("Wrong then position in if statement!");
+  }
+  return group(
+    [
+      child_docs[0],
+      " ",
+      indent(
+        indent([
+          group([
+            child_docs.slice(1, then_position),
+            " ",
+            child_docs[then_position],
+          ]),
+        ]),
+      ),
+      indent(
+        group(
+          [
+            hardline,
+            addSemicolonSeparators(
+              child_docs.slice(then_position + 1, -1),
+              false,
+            ),
+          ],
+          {
+            shouldBreak: true,
+          },
+        ),
+      ),
+      hardline,
+      child_docs[child_docs.length - 1],
+    ],
+    { shouldBreak: true },
+  );
+}
+
+function printElifClause(child_docs: Doc[], then_position: number): Doc {
+  if (then_position == -1) {
+    throw new Error("Wrong then position in if statement!");
+  }
+  return dedent(
+    group(
+      [
+        hardline,
+        child_docs[0],
+        " ",
+        indent(
+          indent([
+            group([
+              child_docs.slice(1, then_position),
+              " ",
+              child_docs[then_position],
+            ]),
+          ]),
+        ),
+        indent(
+          group(
+            [
+              hardline,
+              addSemicolonSeparators(
+                child_docs.slice(then_position + 1),
+                false,
+              ),
+            ],
+            {
+              shouldBreak: true,
+            },
+          ),
+        ),
+      ],
+      { shouldBreak: true },
+    ),
+  );
+}
+
+function printElseClause(child_docs: Doc[]): Doc {
+  return dedent(
+    group(
+      [
+        hardline,
+        child_docs[0],
+        indent(
+          group(
+            [hardline, addSemicolonSeparators(child_docs.slice(1), false)],
+            {
+              shouldBreak: true,
+            },
+          ),
+        ),
+      ],
+      { shouldBreak: true },
+    ),
+  );
+}
+
+function printReturnStatement(child_docs: Doc[]): Doc {
+  return [child_docs[0], " ", group(child_docs.slice(1))];
 }
