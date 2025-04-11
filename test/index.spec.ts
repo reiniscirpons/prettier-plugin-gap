@@ -28,22 +28,12 @@ describe("format", () => {
         existsSync(configPath) && readFileSync(configPath)?.toString();
       const configObject = configString ? JSON.parse(configString) : {};
 
-      const expectedError = expected.match(/Error\("(?<message>.*)"\)/)?.groups
-        ?.message;
-
-      const format = () => prettify(input, configObject);
-
-      if (expectedError) {
-        jest.spyOn(console, "error").mockImplementation(() => { });
-        await expect(format()).rejects.toEqual(new Error(expectedError));
-      } else {
-        const result = prettify(input, configObject);
-        await expect(await result).toEqual(expected);
-        // Check idempotence
-        await expect(await prettify(await result, configObject)).toEqual(
-          expected,
-        );
-      }
+      const result = prettify(input, configObject);
+      await expect(await result).toEqual(expected);
+      // Check idempotence
+      await expect(await prettify(await result, configObject)).toEqual(
+        expected,
+      );
     }),
   );
 });
