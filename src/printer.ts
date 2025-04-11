@@ -105,6 +105,8 @@ export function print(
       return printElseClause(path.map(print, "children"));
     case "return_statement":
       return printReturnStatement(path.map(print, "children"));
+    case "bool":
+      return node.text;
   }
   return node.text;
 }

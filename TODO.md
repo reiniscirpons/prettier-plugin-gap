@@ -23,7 +23,7 @@ Nodes by frequency (should probably be addressed in orderish)
 - [x] 'list_selector': 253898,
 - [x] 'unary_expression': 163959,
 - [x] 'if_statement': 106179,
-- [ ] 'bool': 97760,
+- [x] 'bool': 97760,
 - [ ] 'record_selector': 93171,
 - [x] 'return_statement': 77878,
 - [ ] 'record_entry': 57279,
