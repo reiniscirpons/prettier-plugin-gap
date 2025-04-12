@@ -73,3 +73,7 @@ CreateCapCategoryMorphismWithAttributes( cat_1, P_1, deduped_3_1, Opposite, AsCa
 CreateCapCategoryMorphismWithAttributes( cat_1, deduped_3_1, P_1, Opposite, AsCapCategoryMorphism( OppositeCategory( cat_1 ), Opposite( P_1 ), UnionOfRows( deduped_4_1, deduped_1_1, [ HomalgZeroMatrix( Sum( deduped_2_1{[1 .. k_1 - 1]} ), deduped_1_1, deduped_4_1 ), HomalgIdentityMatrix( deduped_1_1, deduped_4_1 ), HomalgZeroMatrix( Sum( deduped_2_1{[k_1 + 1 .. Length(objects_1)]} ), deduped_1_1, deduped_4_1 ) ] ), CAP_JIT_INCOMPLETE_LOGIC( Opposite( CAP_JIT_INCOMPLETE_LOGIC( deduped_3_1 ) ) ) ) );
 
 Automaton("det",5,"abcdefghijklmnopqrst",[ [ 0, 1, 2, 3, 0 ], [ 2, 4, 5, 0, 0 ], [ 0, 1, 3, 4, 0 ], [ 1, 2, 4, 0, 0 ], [ 1, 3, 4, 0, 0 ], [ 0, 1, 2, 5, 0 ], [ 0, 1, 2, 5, 0 ], [ 0, 3, 5, 0, 0 ], [ 0, 1, 2, 4, 0 ], [ 1, 2, 4, 0, 0 ], [ 0, 1, 5, 0, 0 ], [ 1, 4, 5, 0, 0 ], [ 2, 4, 5, 0, 0 ], [ 0, 1, 2, 4, 5 ], [ 0, 2, 0, 0, 0 ], [ 2, 3, 5, 0, 0 ], [ 1, 2, 3, 4, 0 ], [ 0, 2, 4, 5, 0 ], [ 1, 2, 3, 5, 0 ], [ 0, 1, 5, 0, 0 ] ],[ 5 ],[ 1, 3, 4, 5 ]);
+
+EvaluateBySCSCP(
+  "SylowSubgroup", [M24, 2], laptop, port: output := "cookie"
+);

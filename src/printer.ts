@@ -33,6 +33,10 @@ export function print(
       if (node.nextSibling === null || node.nextSibling.type == ",")
         return [","];
       return [",", line];
+    case ".":
+      return [softline, "."];
+    case "!.":
+      return [softline, "!."];
     case "integer":
       return printInteger(node.text, options.printWidth);
     case "identifier":
@@ -107,15 +111,14 @@ export function print(
       return printReturnStatement(path.map(print, "children"));
     case "bool":
       return node.text;
-    // case "record_selector":
-    //   const selector_index = findFieldLastIndex(node, "selector");
-    //   return printRecordSelector(
-    //     path.map(print, "children"),
-    //     // First "." before selector
-    //     node.children
-    //       .slice(0, selector_index)
-    //       .findLastIndex((child: SyntaxNode) => child.type == "."),
-    //   );
+    case "record_selector":
+      return printRecordSelector(
+        path.map(print, "recordAndComponentSelectorChain"),
+      );
+    case "component_selector":
+      return printRecordSelector(
+        path.map(print, "recordAndComponentSelectorChain"),
+      );
   }
   return node.text;
 }
@@ -131,22 +134,6 @@ function addSemicolonSeparators(docs: Doc[], include_last: boolean): Doc[] {
       : doc,
   );
 }
-
-// function traverseRecordAndComponentSelectorChain(
-//   node: SyntaxNode,
-// ): SyntaxNode[] {
-//   let selectors = [];
-//   while (node.type == "record_selector" || node.type == "component_selector") {
-//     selectors.push(node.children.slice(1));
-//     if (node.firstChild == null) {
-//       throw new Error(
-//         "Wrong number of children for a record or component selector!",
-//       );
-//     }
-//     node = node.firstChild;
-//   }
-//   return [node].concat(selectors.reverse().flat(1));
-// }
 
 function removeGapLineContinuation(text: string): string {
   return text.replaceAll("\\\n", "");
@@ -214,7 +201,7 @@ function printArgumentExpression(
       softline,
       group(child_docs.slice(1, colon_position)),
       child_docs[colon_position],
-      indent([softline, group(child_docs.slice(colon_position + 1, -1))]),
+      indent([line, group(child_docs.slice(colon_position + 1, -1))]),
     ]),
     softline,
     child_docs[child_docs.length - 1],
@@ -372,25 +359,6 @@ function printReturnStatement(child_docs: Doc[]): Doc {
   return [child_docs[0], " ", group(child_docs.slice(1))];
 }
 
-// function printRecordSelector(
-//   child_docs: Doc[],
-//   delimiter_position: number,
-//   is_child_selector: boolean,
-// ): Doc {
-//   if (delimiter_position == -1) {
-//     throw new Error("Wrong dot position in record selector!");
-//   }
-//   if (is_child_selector) {
-//     if ("content" in child_docs[0])
-//       return group(
-//         child_docs.slice(1, delimiter_position),
-//         softline,
-//         child_docs.slice(delimiter_position),
-//       ]);
-//   }
-//   return group([
-//     child_docs.slice(0, delimiter_position),
-//     softline,
-//     child_docs.slice(delimiter_position),
-//   ]);
-// }
+function printRecordSelector(child_docs: Doc[]): Doc {
+  return [child_docs[0], indent(group(child_docs.slice(1)))];
+}

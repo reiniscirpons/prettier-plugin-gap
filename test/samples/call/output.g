@@ -141,3 +141,4 @@ Automaton(
   [5],
   [1, 3, 4, 5]
 );
+EvaluateBySCSCP("SylowSubgroup", [M24, 2], laptop, port: output := "cookie");

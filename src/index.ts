@@ -17,12 +17,12 @@ export const languages: SupportLanguage[] = [
   },
 ];
 
-export const parsers: Record<string, Parser> = {
+export const parsers: Record<string, Parser<GapNode>> = {
   "tree-sitter-gap": {
-    parse: (text) => new GapNode(parser.parse(text).rootNode),
+    parse: (text: string): GapNode => new GapNode(parser.parse(text).rootNode),
     astFormat: "tree-sitter-gap-ast",
-    locStart: (node) => node.startIndex,
-    locEnd: (node) => node.endIndex,
+    locStart: (node: GapNode): number => node.startIndex,
+    locEnd: (node: GapNode): number => node.endIndex,
   },
 };
 

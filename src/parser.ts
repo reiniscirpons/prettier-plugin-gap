@@ -27,6 +27,27 @@ export class GapNode {
     return this.internal_node.endIndex;
   }
 
+  get recordAndComponentSelectorChain(): GapNode[] | null {
+    if (this.type != "record_selector" && this.type != "component_selector") {
+      return null;
+    }
+    let node: GapNode = this;
+    let selectors = [];
+    while (
+      node.type == "record_selector" ||
+      node.type == "component_selector"
+    ) {
+      selectors.push(node.children.slice(1));
+      if (node.firstChild == null) {
+        throw new Error(
+          "Wrong number of children for a record or component selector!",
+        );
+      }
+      node = node.firstChild;
+    }
+    return [node].concat(selectors.reverse().flat());
+  }
+
   get children(): GapNode[] {
     return this.internal_node.children
       .filter((child: SyntaxNode) => child.type != "comment")
