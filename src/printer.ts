@@ -54,7 +54,7 @@ export function print(
     case "call":
       return path.map(print, "children");
     case "argument_list":
-      return printArgumentExpression(
+      return printArgumentList(
         path.map(print, "children"),
         node.findChildIndexByType(":"),
       );
@@ -66,6 +66,11 @@ export function print(
     case "parenthesized_expression":
       return printListExpression(path.map(print, "children"), false);
     case "assignment_statement":
+      return printAssignmentStatement(
+        path.map(print, "children"),
+        node.children.findIndex((child: GapNode) => child.type == ":="),
+      );
+    case "record_entry":
       return printAssignmentStatement(
         path.map(print, "children"),
         node.children.findIndex((child: GapNode) => child.type == ":="),
@@ -118,6 +123,11 @@ export function print(
     case "component_selector":
       return printRecordSelector(
         path.map(print, "recordAndComponentSelectorChain"),
+      );
+    case "record_expression":
+      return printRecordExpression(
+        path.map(print, "children"),
+        node.children[node.children.length - 2].type == ",",
       );
   }
   return node.text;
@@ -188,10 +198,7 @@ function printListExpression(child_docs: Doc[], is_simple: boolean): Doc {
   ]);
 }
 
-function printArgumentExpression(
-  child_docs: Doc[],
-  colon_position?: number,
-): Doc {
+function printArgumentList(child_docs: Doc[], colon_position?: number): Doc {
   if (colon_position == null || colon_position == -1) {
     return printListExpression(child_docs, false);
   }
@@ -361,4 +368,25 @@ function printReturnStatement(child_docs: Doc[]): Doc {
 
 function printRecordSelector(child_docs: Doc[]): Doc {
   return [child_docs[0], indent(group(child_docs.slice(1)))];
+}
+
+function printRecordExpression(
+  child_docs: Doc[],
+  has_trailing_comma: boolean,
+): Doc {
+  return group(
+    [
+      child_docs[0],
+      child_docs[1],
+      indent([
+        softline,
+        group(child_docs.slice(2, has_trailing_comma ? -2 : -1), {
+          shouldBreak: has_trailing_comma,
+        }),
+      ]),
+      has_trailing_comma ? [",", softline] : softline,
+      child_docs[child_docs.length - 1],
+    ],
+    { shouldBreak: has_trailing_comma },
+  );
 }
