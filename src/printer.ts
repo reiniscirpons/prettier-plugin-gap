@@ -1,5 +1,5 @@
 import { Doc, doc, AstPath, ParserOptions } from "prettier";
-import { SyntaxNode } from "tree-sitter";
+import { GapNode } from "./parser";
 const {
   join,
   line,
@@ -18,7 +18,7 @@ export type PrintFn = (path: AstPath) => Doc;
 // Parsing grammar
 
 export function print(
-  path: AstPath,
+  path: AstPath<GapNode>,
   options: ParserOptions,
   print: PrintFn,
 ): Doc {
@@ -45,26 +45,26 @@ export function print(
     case "unary_expression":
       return printUnaryExpression(
         path.map(print, "children"),
-        node.firstChild.type == "not",
+        node.firstChild != null && node.firstChild.type == "not",
       );
     case "call":
       return path.map(print, "children");
     case "argument_list":
       return printArgumentExpression(
         path.map(print, "children"),
-        node.children.findIndex((child: SyntaxNode) => child.type == ":"),
+        node.findChildIndexByType(":"),
       );
     case "binary_expression":
       return printBinaryExpression(
         path.map(print, "children"),
-        findFieldIndex(node, "operator"),
+        node.findChildIndexByField("operator"),
       );
     case "parenthesized_expression":
       return printListExpression(path.map(print, "children"), false);
     case "assignment_statement":
       return printAssignmentStatement(
         path.map(print, "children"),
-        node.children.findIndex((child: SyntaxNode) => child.type == ":="),
+        node.children.findIndex((child: GapNode) => child.type == ":="),
       );
     case "string":
       return node.text;
@@ -78,28 +78,28 @@ export function print(
         path.map(print, "children"),
         // First "[" before selector
         node.children
-          .slice(0, findFieldIndex(node, "selector"))
-          .findLastIndex((child: SyntaxNode) => child.type == "["),
+          .slice(0, node.findChildIndexByField("selector"))
+          .findLastIndex((child: GapNode) => child.type == "["),
       );
     case "if_statement":
-      const condition_index_1 = findFieldLastIndex(node, "condition");
+      const condition_index_1 = node.findChildLastIndexByField("condition");
       return printIfStatement(
         path.map(print, "children"),
         // First "then" before body
         condition_index_1 +
-        node.children
-          .slice(condition_index_1)
-          .findIndex((child: SyntaxNode) => child.type == "then"),
+          node.children
+            .slice(condition_index_1)
+            .findIndex((child: GapNode) => child.type == "then"),
       );
     case "elif_clause":
-      const condition_index_2 = findFieldLastIndex(node, "condition");
+      const condition_index_2 = node.findChildLastIndexByField("condition");
       return printElifClause(
         path.map(print, "children"),
         // First "then" before body
         condition_index_2 +
-        node.children
-          .slice(condition_index_2)
-          .findIndex((child: SyntaxNode) => child.type == "then"),
+          node.children
+            .slice(condition_index_2)
+            .findIndex((child: GapNode) => child.type == "then"),
       );
     case "else_clause":
       return printElseClause(path.map(print, "children"));
@@ -107,6 +107,15 @@ export function print(
       return printReturnStatement(path.map(print, "children"));
     case "bool":
       return node.text;
+    // case "record_selector":
+    //   const selector_index = findFieldLastIndex(node, "selector");
+    //   return printRecordSelector(
+    //     path.map(print, "children"),
+    //     // First "." before selector
+    //     node.children
+    //       .slice(0, selector_index)
+    //       .findLastIndex((child: SyntaxNode) => child.type == "."),
+    //   );
   }
   return node.text;
 }
@@ -123,31 +132,27 @@ function addSemicolonSeparators(docs: Doc[], include_last: boolean): Doc[] {
   );
 }
 
-function findFieldIndex(node: SyntaxNode, field_name: string): number {
-  const field_child = node.childForFieldName(field_name);
-  if (field_child == null) {
-    return -1;
-  }
-  return node.children.findIndex(
-    (child: SyntaxNode) => child.id == field_child.id,
-  );
-}
-
-function findFieldLastIndex(node: SyntaxNode, field_name: string): number {
-  const field_child = node.childForFieldName(field_name);
-  if (field_child == null) {
-    return -1;
-  }
-  return node.children.findLastIndex(
-    (child: SyntaxNode) => child.id == field_child.id,
-  );
-}
+// function traverseRecordAndComponentSelectorChain(
+//   node: SyntaxNode,
+// ): SyntaxNode[] {
+//   let selectors = [];
+//   while (node.type == "record_selector" || node.type == "component_selector") {
+//     selectors.push(node.children.slice(1));
+//     if (node.firstChild == null) {
+//       throw new Error(
+//         "Wrong number of children for a record or component selector!",
+//       );
+//     }
+//     node = node.firstChild;
+//   }
+//   return [node].concat(selectors.reverse().flat(1));
+// }
 
 function removeGapLineContinuation(text: string): string {
   return text.replaceAll("\\\n", "");
 }
 
-function isSimpleList(node: SyntaxNode): boolean {
+function isSimpleList(node: GapNode): boolean {
   for (const child of node.children) {
     if (child.type == "list_expression") {
       return false;
@@ -354,9 +359,7 @@ function printElseClause(child_docs: Doc[]): Doc {
         indent(
           group(
             [hardline, addSemicolonSeparators(child_docs.slice(1), false)],
-            {
-              shouldBreak: true,
-            },
+            { shouldBreak: true },
           ),
         ),
       ],
@@ -368,3 +371,26 @@ function printElseClause(child_docs: Doc[]): Doc {
 function printReturnStatement(child_docs: Doc[]): Doc {
   return [child_docs[0], " ", group(child_docs.slice(1))];
 }
+
+// function printRecordSelector(
+//   child_docs: Doc[],
+//   delimiter_position: number,
+//   is_child_selector: boolean,
+// ): Doc {
+//   if (delimiter_position == -1) {
+//     throw new Error("Wrong dot position in record selector!");
+//   }
+//   if (is_child_selector) {
+//     if ("content" in child_docs[0])
+//       return group(
+//         child_docs.slice(1, delimiter_position),
+//         softline,
+//         child_docs.slice(delimiter_position),
+//       ]);
+//   }
+//   return group([
+//     child_docs.slice(0, delimiter_position),
+//     softline,
+//     child_docs.slice(delimiter_position),
+//   ]);
+// }
