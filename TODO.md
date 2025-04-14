@@ -1,8 +1,11 @@
 - [x] Migrate to typescript
 - [x] Migrate to sane testing framework
 - [ ] Implement node types
-- [ ] Write proxy for wrapping AST
-  - [ ] Gather comments separately
+- [x] Write proxy for wrapping AST
+  - [x] Gather comments separately
+  - [x] record selector chains
+  - [ ] Preserve newlines somewhat
+- [ ] Figure out how to print comments
 - [ ] Update readme
 
 Nodes by frequency (should probably be addressed in orderish)
@@ -27,29 +30,29 @@ Nodes by frequency (should probably be addressed in orderish)
 - [x] 'record_selector': 93171,
 - [x] 'return_statement': 77878,
 - [x] 'record_entry': 57279,
-- [ ] 'parameters': 54715,
-- [ ] 'function': 54709,
+- [x] 'parameters': 54715,
+- [x] 'function': 54709,
 - [x] 'parenthesized_expression': 49836,
-- [ ] 'range_expression': 46884,
-- [ ] 'lambda_parameters': 40740,
-- [ ] 'lambda': 40589,
+- [x] 'range_expression': 46884,
+- [x] 'lambda_parameters': 40740,
+- [x] 'lambda': 40589,
 - [x] 'component_selector': 38916,
-- [ ] 'escape_sequence': 38048,
-- [ ] 'for_statement': 38033,
-- [ ] 'locals': 33356,
+- [x] 'escape_sequence': 38048,
+- [x] 'for_statement': 38033,
+- [x] 'locals': 33356,
 - [x] 'else_clause': 28288,
 - [x] 'permutation_expression': 26614,
 - [x] 'elif_clause': 15398,
 - [x] 'record_expression': 14799,
-- [ ] 'sublist_selector': 12630,
-- [ ] 'source_file': 9386,
-- [ ] 'while_statement': 6073,
-- [ ] 'positional_selector': 5755,
-- [ ] 'function_call_option': 3458,
+- [x] 'sublist_selector': 12630,
+- [x] 'source_file': 9386,
+- [x] 'while_statement': 6073,
+- [x] 'positional_selector': 5755,
+- [x] 'function_call_option': 3458,
 - [ ] 'char': 3014,
 - [ ] 'tilde': 1817,
 - [ ] 'break_statement': 1757,
-- [ ] 'repeat_statement': 1408,
+- [x] 'repeat_statement': 1408,
 - [ ] 'quit_statement': 640,
 - [ ] 'continue_statement': 592,
 - [ ] 'float': 503,

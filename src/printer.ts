@@ -90,6 +90,22 @@ export function print(
           .slice(0, node.findChildIndexByField("selector"))
           .findLastIndex((child: GapNode) => child.type == "["),
       );
+    case "sublist_selector":
+      return printListSelector(
+        path.map(print, "children"),
+        // First "{" before selector
+        node.children
+          .slice(0, node.findChildIndexByField("selector"))
+          .findLastIndex((child: GapNode) => child.type == "{"),
+      );
+    case "positional_selector":
+      return printListSelector(
+        path.map(print, "children"),
+        // First "![" before selector
+        node.children
+          .slice(0, node.findChildIndexByField("selector"))
+          .findLastIndex((child: GapNode) => child.type == "!["),
+      );
     case "if_statement":
       const condition_index_1 = node.findChildLastIndexByField("condition");
       return printIfStatement(
@@ -128,6 +144,58 @@ export function print(
       return printRecordExpression(
         path.map(print, "children"),
         node.children[node.children.length - 2].type == ",",
+      );
+    case "function_call_option":
+      return path.map(print, "children");
+    case "function_expression":
+      return printFunctionExpression(path.map(print, "children"));
+    case "parameters":
+      return printListExpression(path.map(print, "children"), false);
+    case "locals":
+      return printLocals(path.map(print, "children"));
+    case "pragma":
+      return [node.text, hardline];
+    case "lambda":
+      return printLambda(path.map(print, "children"));
+    case "lambda_parameters":
+      return printLambdaParameters(
+        path.map(print, "children"),
+        node.children.length == 1 &&
+          node.firstChild != null &&
+          node.firstChild.type == "identifier",
+      );
+    case "range_expression":
+      return printRangeExpression(
+        path.map(print, "children"),
+        node.children
+          .slice(0, node.findChildIndexByField("last"))
+          .findLastIndex((child: GapNode) => child.type == ".."),
+      );
+    case "for_statement":
+      return printForStatement(
+        path.map(print, "children"),
+        node.children
+          .slice(0, node.findChildIndexByField("values"))
+          .findLastIndex((child: GapNode) => child.type == "in"),
+        node.children
+          .slice(0, node.findChildIndexByField("body"))
+          .findLastIndex((child: GapNode) => child.type == "do"),
+      );
+    case "escape_sequence":
+      return node.text;
+    case "while_statement":
+      return printWhileStatement(
+        path.map(print, "children"),
+        node.children
+          .slice(0, node.findChildIndexByField("body"))
+          .findLastIndex((child: GapNode) => child.type == "do"),
+      );
+    case "repeat_statement":
+      return printRepeatStatement(
+        path.map(print, "children"),
+        node.children
+          .slice(0, node.findChildIndexByField("condition"))
+          .findLastIndex((child: GapNode) => child.type == "until"),
       );
   }
   return node.text;
@@ -250,7 +318,7 @@ function printAssignmentStatement(
     " ",
     child_docs[operator_position],
     " ",
-    child_docs.slice(operator_position + 1),
+    indent(child_docs.slice(operator_position + 1)),
   ]);
 }
 
@@ -363,6 +431,9 @@ function printElseClause(child_docs: Doc[]): Doc {
 }
 
 function printReturnStatement(child_docs: Doc[]): Doc {
+  if (child_docs.length == 1) {
+    return child_docs;
+  }
   return [child_docs[0], " ", group(child_docs.slice(1))];
 }
 
@@ -388,5 +459,188 @@ function printRecordExpression(
       child_docs[child_docs.length - 1],
     ],
     { shouldBreak: has_trailing_comma },
+  );
+}
+
+function printFunctionExpression(child_docs: Doc[]): Doc {
+  return group(
+    [
+      child_docs[0],
+      child_docs[1],
+      indent(
+        group(
+          [hardline, addSemicolonSeparators(child_docs.slice(2, -1), false)],
+          {
+            shouldBreak: true,
+          },
+        ),
+      ),
+      hardline,
+      child_docs[child_docs.length - 1],
+    ],
+    { shouldBreak: true },
+  );
+}
+
+function printLocals(child_docs: Doc[]): Doc {
+  let rest: Doc = [line];
+  rest = rest.concat(child_docs.slice(1));
+  return [child_docs[0], indent(fill(rest))];
+}
+
+function printLambda(child_docs: Doc[]): Doc {
+  return group([
+    child_docs[0],
+    " ",
+    child_docs[1],
+    " ",
+    indent(group(child_docs.slice(2))),
+  ]);
+}
+
+function printLambdaParameters(child_docs: Doc[], is_identifier: boolean): Doc {
+  if (is_identifier) {
+    return child_docs;
+  }
+  return printListExpression(child_docs, false);
+}
+
+function printRangeExpression(child_docs: Doc[], dotdot_position: number): Doc {
+  if (dotdot_position == -1) {
+    throw new Error("Wrong .. position in range expression!");
+  }
+  return group([
+    child_docs[0],
+    indent(
+      group([
+        softline,
+        child_docs.slice(1, dotdot_position),
+        " ",
+        child_docs[dotdot_position],
+        line,
+        child_docs.slice(dotdot_position + 1, -1),
+      ]),
+    ),
+    softline,
+    child_docs[child_docs.length - 1],
+  ]);
+}
+
+function printForStatement(
+  child_docs: Doc[],
+  in_position: number,
+  do_position: number,
+): Doc {
+  if (in_position == -1) {
+    throw new Error("Wrong in position in for statement!");
+  }
+  if (do_position == -1) {
+    throw new Error("Wrong do position in for statement!");
+  }
+  if (in_position >= do_position) {
+    throw new Error("Do before in in for statement!");
+  }
+  if (in_position == do_position - 1) {
+    throw new Error("No values field in for statement!");
+  }
+  return group(
+    [
+      child_docs[0],
+      " ",
+      indent(
+        indent([
+          group([
+            child_docs.slice(1, in_position),
+            " ",
+            child_docs[in_position],
+            line,
+            child_docs.slice(in_position + 1, do_position),
+            " ",
+            child_docs[do_position],
+          ]),
+        ]),
+      ),
+      indent(
+        group(
+          [
+            hardline,
+            addSemicolonSeparators(
+              child_docs.slice(do_position + 1, -1),
+              false,
+            ),
+          ],
+          {
+            shouldBreak: true,
+          },
+        ),
+      ),
+      hardline,
+      child_docs[child_docs.length - 1],
+    ],
+    { shouldBreak: true },
+  );
+}
+
+function printWhileStatement(child_docs: Doc[], do_position: number): Doc {
+  if (do_position == -1) {
+    throw new Error("Wrong do position in for statement!");
+  }
+  return group(
+    [
+      child_docs[0],
+      " ",
+      indent(
+        indent([
+          group([
+            child_docs.slice(1, do_position),
+            " ",
+            child_docs[do_position],
+          ]),
+        ]),
+      ),
+      indent(
+        group(
+          [
+            hardline,
+            addSemicolonSeparators(
+              child_docs.slice(do_position + 1, -1),
+              false,
+            ),
+          ],
+          {
+            shouldBreak: true,
+          },
+        ),
+      ),
+      hardline,
+      child_docs[child_docs.length - 1],
+    ],
+    { shouldBreak: true },
+  );
+}
+
+function printRepeatStatement(child_docs: Doc[], until_position: number): Doc {
+  if (until_position == -1) {
+    throw new Error("Wrong until position in repeat statement!");
+  }
+  return group(
+    [
+      child_docs[0],
+      indent(
+        group(
+          [
+            hardline,
+            addSemicolonSeparators(child_docs.slice(1, until_position), false),
+          ],
+          {
+            shouldBreak: true,
+          },
+        ),
+      ),
+      hardline,
+      child_docs[until_position],
+      indent(group([line, child_docs.slice(until_position + 1)])),
+    ],
+    { shouldBreak: true },
   );
 }

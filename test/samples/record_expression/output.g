@@ -3,12 +3,12 @@ rec(label := [[1, 2, 3], [0, 1]], index := 25);
 rec(
   attr := [],
   content := [
-    "A", "Address", "Alt", "Arg", "B", "Br", "Button", "C", "Cite", "Code",
-    "Display", "E", "Email", "Emph", "Enum", "Example", "F", "File", "Homepage",
-    "Ignore", "Index", "K", "Keyword", "Label", "List", "Listing", "Log", "M",
-    "Math", "P", "PCDATA", "Package", "Par", "Q", "Quoted", "Ref", "Table",
-    "URL", "Verb"
-  ],
+      "A", "Address", "Alt", "Arg", "B", "Br", "Button", "C", "Cite", "Code",
+      "Display", "E", "Email", "Emph", "Enum", "Example", "F", "File",
+      "Homepage", "Ignore", "Index", "K", "Keyword", "Label", "List", "Listing",
+      "Log", "M", "Math", "P", "PCDATA", "Package", "Par", "Q", "Quoted", "Ref",
+      "Table", "URL", "Verb"
+    ],
   name := "Subtitle",
   reqattr := [],
   type := "mixed"
@@ -50,15 +50,15 @@ rec(
 rec(
   d := 1,
   expl := [
-    InfoLine(
-      n,
-      k,
-      1,
-      Concatenation("entire space GF(", String(q), ")^", String(n)),
-      spaces,
-      prefix
-    )
-  ],
+      InfoLine(
+        n,
+        k,
+        1,
+        Concatenation("entire space GF(", String(q), ")^", String(n)),
+        spaces,
+        prefix
+      )
+    ],
   cons := [WholeSpaceCode, [n, q]]
 );
 rec(firstallowed := firstallowed, step := step, number := min_number);
@@ -70,10 +70,10 @@ rec(
   name := "U3(4):2",
   parent := "G24",
   generators := [
-    ((a * b * a * b * a * b * a * b ^ 2 * a * b * a * b ^ 2 * a * b ^ 2) ^ 3) ^
-    ((a * b) ^ 4),
-    ((a * b * a * b * a * b ^ 2 * a * b * a * b ^ 2) ^ 10) ^ ((a * b ^ 2) ^ 4)
-  ],
+      ((a * b * a * b * a * b * a * b ^ 2 * a * b * a * b ^ 2 * a * b ^ 2) ^ 3) ^
+      ((a * b) ^ 4),
+      ((a * b * a * b * a * b ^ 2 * a * b * a * b ^ 2) ^ 10) ^ ((a * b ^ 2) ^ 4)
+    ],
   order := 124800,
   index := 2016
 );
@@ -102,13 +102,14 @@ rec(chevSys := [pv, nv, hs], rank := Length(SimpleSystem(rs)));
 rec(
   source := "[CR84, 15.29]",
   rels := [
-    a ^ 2, b ^ 3, (a * b) ^ 19, ((a * b) ^ 2 * a * b ^ -1) ^ 6,
-    ((a * b) ^ 3 * a * b ^ -1) ^ 6, (Comm(a, (b * a) ^ 4 * b ^ -1 * a * b)) ^ 2,
-    (
-      (a * b) ^ 4 * a * b ^ -1 * a * b * (a * b ^ -1) ^ 3 * (a * b) ^ 2 * a *
-      b ^ -1
-    ) ^ 2
-  ],
+      a ^ 2, b ^ 3, (a * b) ^ 19, ((a * b) ^ 2 * a * b ^ -1) ^ 6,
+      ((a * b) ^ 3 * a * b ^ -1) ^ 6,
+      (Comm(a, (b * a) ^ 4 * b ^ -1 * a * b)) ^ 2,
+      (
+        (a * b) ^ 4 * a * b ^ -1 * a * b * (a * b ^ -1) ^ 3 * (a * b) ^ 2 * a *
+        b ^ -1
+      ) ^ 2
+    ],
   sgens := [a, b ^ ((a * b ^ -1 * a * b) ^ 2 * a * b ^ -1 * (a * b) ^ 2)]
 );
 rec(
@@ -136,13 +137,13 @@ rec(
   boundary := C!.boundary,
   pseudoBoundary := R!.pseudoBoundary,
   properties := [
-    ["length", EvaluateProperty(R, "length")],
-    ["connected", true],
-    ["type", "chainComplex"],
-    ["filtration_length", ln],
-    ["initial_inclusion", EvaluateProperty(R, "initial_inclusion")],
-    ["characteristic", EvaluateProperty(R, "characteristic")]
-  ]
+      ["length", EvaluateProperty(R, "length")],
+      ["connected", true],
+      ["type", "chainComplex"],
+      ["filtration_length", ln],
+      ["initial_inclusion", EvaluateProperty(R, "initial_inclusion")],
+      ["characteristic", EvaluateProperty(R, "characteristic")]
+    ]
 );
 rec(
   LastName := "Gamble",
@@ -151,12 +152,12 @@ rec(
   IsMaintainer := false,
   Email := "Greg.Gamble@uwa.edu.au",
   PostalAddress := Concatenation(
-    "Department of Mathematics and Statistics\n",
-    "Curtin University\n",
-    "GPO Box U 1987\n",
-    "Perth WA 6845\n",
-    "Australia"
-  ),
+      "Department of Mathematics and Statistics\n",
+      "Curtin University\n",
+      "GPO Box U 1987\n",
+      "Perth WA 6845\n",
+      "Australia"
+    ),
   Place := "Perth",
   Institution := "Curtin University"
 );
@@ -170,12 +171,12 @@ rec(
   classes := reg.classes,
   powermap := reg.powermap,
   fusions := [
-    rec(
-      name := ordtbl.identifier,
-      map := GetFusionMap(reg, ordtbl),
-      type := "choice"
-    )
-  ],
+      rec(
+        name := ordtbl.identifier,
+        map := GetFusionMap(reg, ordtbl),
+        type := "choice"
+      )
+    ],
   irreducibles := [],
   irredinfo := [],
   blocks := [],

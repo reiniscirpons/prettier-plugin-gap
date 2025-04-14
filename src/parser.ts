@@ -12,6 +12,13 @@ export class GapNode {
   }
 
   get type(): string {
+    // Hack until we change this in the tree sitter grammar
+    if (
+      this.internal_node.type == "function" &&
+      this.internal_node.children.length > 0
+    ) {
+      return "function_expression";
+    }
     return this.internal_node.type;
   }
 
