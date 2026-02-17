@@ -6,7 +6,7 @@
     "lib": [
       "esnext"
     ],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "removeComments": true,
     "inlineSourceMap": true,
     "inlineSources": true,

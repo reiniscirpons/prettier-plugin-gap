@@ -39,6 +39,8 @@ export function print(
       return [softline, "!."];
     case "integer":
       return printInteger(node.text, options.printWidth);
+    case "float":
+      return printInteger(node.text, options.printWidth);
     case "identifier":
       return printIdentifier(node.text);
     case "list_expression":
@@ -75,8 +77,6 @@ export function print(
         path.map(print, "children"),
         node.children.findIndex((child: GapNode) => child.type == ":="),
       );
-    case "string":
-      return node.text;
     case "permutation_cycle_expression":
       // TODO: Maybe print this slightly differently?
       return printListExpression(path.map(print, "children"), true);
@@ -130,8 +130,6 @@ export function print(
       return printElseClause(path.map(print, "children"));
     case "return_statement":
       return printReturnStatement(path.map(print, "children"));
-    case "bool":
-      return node.text;
     case "record_selector":
       return printRecordSelector(
         path.map(print, "recordAndComponentSelectorChain"),
@@ -181,8 +179,6 @@ export function print(
           .slice(0, node.findChildIndexByField("body"))
           .findLastIndex((child: GapNode) => child.type == "do"),
       );
-    case "escape_sequence":
-      return node.text;
     case "while_statement":
       return printWhileStatement(
         path.map(print, "children"),
@@ -197,6 +193,16 @@ export function print(
           .slice(0, node.findChildIndexByField("condition"))
           .findLastIndex((child: GapNode) => child.type == "until"),
       );
+    case "string": // TODO: FIXME: Multiline strings might be broken if mixed with indentation, test this!
+    case "bool":
+    case "char":
+    case "escape_sequence":
+    case "tilde":
+    case "ellipsis":
+    case "break_statement":
+    case "quit_statement":
+    case "break_statement":
+      return node.text;
   }
   return node.text;
 }
@@ -643,4 +649,13 @@ function printRepeatStatement(child_docs: Doc[], until_position: number): Doc {
     ],
     { shouldBreak: true },
   );
+}
+
+export function printComment(
+  commentPath: AstPath,
+  options: ParserOptions,
+): Doc {
+  const node = commentPath.node;
+  node.printed = true;
+  return node.text;
 }

@@ -3,12 +3,26 @@
 // TODO: Wrap AST nodes in a proxy object
 
 import { SyntaxNode } from "tree-sitter";
+import TSParser from "tree-sitter";
+import GapLanguage from "tree-sitter-gap";
 
 export class GapNode {
   private internal_node: SyntaxNode;
+  // public comments: GapNode[];
+  // // Some weird stuff for comment attachment
+  // public enclosingNode?: GapNode | undefined;
+  // public precedingNode?: GapNode | undefined;
+  // public followingNode?: GapNode | undefined;
+  // public placement?: string | undefined;
+  // public marker?: string | undefined;
+  // public printed?: boolean | undefined;
+  // public leading?: boolean | undefined;
+  // public trailing?: boolean | undefined;
 
   constructor(internal_node: SyntaxNode) {
     this.internal_node = internal_node;
+    // this.printed = false;
+    // this.comments = [];
   }
 
   get type(): string {
@@ -23,6 +37,10 @@ export class GapNode {
   }
 
   get text(): string {
+    return this.internal_node.text;
+  }
+
+  get value(): string {
     return this.internal_node.text;
   }
 
@@ -84,12 +102,6 @@ export class GapNode {
     return new GapNode(node);
   }
 
-  get comments(): GapNode[] {
-    return this.internal_node
-      .descendantsOfType("comment")
-      .map((child: SyntaxNode) => new GapNode(child));
-  }
-
   findChildIndexByType(type: string): number {
     return this.children.findIndex((child: GapNode) => child.type == type);
   }
@@ -117,6 +129,21 @@ export class GapNode {
       (child: GapNode) => child.internal_node.id == field_child.id,
     );
   }
+
+  getComments(): GapNode[] {
+    return this.internal_node
+      .descendantsOfType("comment")
+      .map((child: SyntaxNode) => new GapNode(child));
+  }
+}
+
+const parser = new TSParser();
+parser.setLanguage(GapLanguage as TSParser.Language);
+
+export function parse(text: string) {
+  const result = new GapNode(parser.parse(text).rootNode);
+  // result.comments = result.getComments();
+  return result;
 }
 
 // TODO:

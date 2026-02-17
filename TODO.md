@@ -7,6 +7,7 @@
   - [ ] Preserve newlines somewhat
 - [ ] Figure out how to print comments
 - [ ] Update readme
+- [ ] Use gaplint file for config
 
 Nodes by frequency (should probably be addressed in orderish)
 
@@ -49,14 +50,14 @@ Nodes by frequency (should probably be addressed in orderish)
 - [x] 'while_statement': 6073,
 - [x] 'positional_selector': 5755,
 - [x] 'function_call_option': 3458,
-- [ ] 'char': 3014,
-- [ ] 'tilde': 1817,
-- [ ] 'break_statement': 1757,
+- [x] 'char': 3014,
+- [x] 'tilde': 1817,
+- [x] 'break_statement': 1757,
 - [x] 'repeat_statement': 1408,
-- [ ] 'quit_statement': 640,
-- [ ] 'continue_statement': 592,
-- [ ] 'float': 503,
-- [ ] 'ellipsis': 377,
+- [x] 'quit_statement': 640,
+- [x] 'continue_statement': 592,
+- [x] 'float': 503,
+- [x] 'ellipsis': 377,
 - [ ] 'ERROR': 286,
 - [ ] 'atomic_statement': 84,
 - [ ] 'pragma': 81,
