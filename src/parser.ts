@@ -8,21 +8,9 @@ import GapLanguage from "tree-sitter-gap";
 
 export class GapNode {
   private internal_node: SyntaxNode;
-  // public comments: GapNode[];
-  // // Some weird stuff for comment attachment
-  // public enclosingNode?: GapNode | undefined;
-  // public precedingNode?: GapNode | undefined;
-  // public followingNode?: GapNode | undefined;
-  // public placement?: string | undefined;
-  // public marker?: string | undefined;
-  // public printed?: boolean | undefined;
-  // public leading?: boolean | undefined;
-  // public trailing?: boolean | undefined;
 
   constructor(internal_node: SyntaxNode) {
     this.internal_node = internal_node;
-    // this.printed = false;
-    // this.comments = [];
   }
 
   get type(): string {
@@ -75,7 +63,7 @@ export class GapNode {
 
   get children(): GapNode[] {
     return this.internal_node.children
-      .filter((child: SyntaxNode) => child.type != "comment")
+      //.filter((child: SyntaxNode) => child.type != "comment")
       .map((child: SyntaxNode) => new GapNode(child));
   }
 

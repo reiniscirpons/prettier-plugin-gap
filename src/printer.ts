@@ -38,7 +38,6 @@ export function print(
     case "!.":
       return [softline, "!."];
     case "integer":
-      return printInteger(node.text, options.printWidth);
     case "float":
       return printInteger(node.text, options.printWidth);
     case "identifier":
@@ -68,10 +67,6 @@ export function print(
     case "parenthesized_expression":
       return printListExpression(path.map(print, "children"), false);
     case "assignment_statement":
-      return printAssignmentStatement(
-        path.map(print, "children"),
-        node.children.findIndex((child: GapNode) => child.type == ":="),
-      );
     case "record_entry":
       return printAssignmentStatement(
         path.map(print, "children"),
@@ -131,9 +126,6 @@ export function print(
     case "return_statement":
       return printReturnStatement(path.map(print, "children"));
     case "record_selector":
-      return printRecordSelector(
-        path.map(print, "recordAndComponentSelectorChain"),
-      );
     case "component_selector":
       return printRecordSelector(
         path.map(print, "recordAndComponentSelectorChain"),
@@ -193,6 +185,9 @@ export function print(
           .slice(0, node.findChildIndexByField("condition"))
           .findLastIndex((child: GapNode) => child.type == "until"),
       );
+    // Idea for comments: have "comment scopes" which start/end after certain statements or clauses
+    case "comment":
+      return [node.text, hardline];
     case "string": // TODO: FIXME: Multiline strings might be broken if mixed with indentation, test this!
     case "bool":
     case "char":
