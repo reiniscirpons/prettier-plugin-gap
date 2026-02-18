@@ -1,6 +1,6 @@
 import { SupportLanguage, Parser, Printer, ParserOptions } from "prettier";
-import { print, printComment } from "./printer";
-import { parse, GapNode } from "./parser";
+import { print, printComment } from "./printer.js";
+import { parse, GapNode } from "./parser.js";
 
 export interface PrettierPluginParserOptions extends ParserOptions { }
 
