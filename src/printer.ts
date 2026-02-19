@@ -1,5 +1,5 @@
 import { Doc, doc, AstPath, ParserOptions } from "prettier";
-import { GapNode } from "./parser.js";
+import { GapNode } from "./parser";
 const {
   join,
   line,

@@ -1,25 +1,43 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "target": "esnext",
-    "module": "esnext",
-    "lib": [
-      "esnext"
-    ],
-    "moduleResolution": "bundler",
-    "removeComments": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "preserveConstEnums": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "target": "ES2020",
+
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+
+    "lib": ["ESNext"],
+    "skipLibCheck": true,
+		"skipDefaultLibCheck": true,
+
     "strict": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,
-    "outDir": "./lib"
+
+    "types": [
+      "prettier",
+      "node",
+      "jest"
+    ],
+    "outDir": "./lib",
+
+    "inlineSourceMap": true,
+    "inlineSources": true,
+
+    "isolatedModules": true
   },
   "include": [
-    "src/**/*"
-  ]
+    "src"
+  ],
+	"ts-node": {
+		"esm": true,
+		"swc": true,
+		"experimentalSpecifierResolution": "node"
+	},
+	"tsc-alias": {
+	  "resolveFullPaths": true
+	}
 }

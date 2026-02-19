@@ -1,7 +1,7 @@
 {
   "name": "prettier-plugin-gap",
   "description": "Prettier plugin for gap",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": {
     "name": "Reinis Cirpons",
     "email": "rc234@st-andrews.ac.uk",
@@ -23,24 +23,27 @@
     "url": "https://github.com/reiniscirpons/prettier-plugin-gap.git"
   },
   "dependencies": {
+    "node-addon-api": "^8.5.0",
     "node-gyp-build": "^4.8.4",
     "prettier": "^3.5.3",
     "tree-sitter": "^0.22.4",
     "tree-sitter-gap": "git://github.com/gap-system/tree-sitter-gap.git#7db79590d2f8b0e0246008ecfd569b4bfca587a9"
   },
   "devDependencies": {
+    "@swc/core": "^1.15.11",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.6",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.7.3"
   },
   "scripts": {
     "lint": "tslint --project .",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage --no-cache",
-    "build": "tsc --pretty",
+    "build": "tsc --pretty && tsc-alias",
     "watch": "npm run build -- --watch",
     "watch:test": "NODE_OPTIONS=--experimental-vm-modules jest --watch"
   },
