@@ -1,7 +1,7 @@
 {
   "name": "prettier-plugin-gap",
   "description": "Prettier plugin for gap",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": {
     "name": "Reinis Cirpons",
     "email": "rc234@st-andrews.ac.uk",
@@ -27,7 +27,7 @@
     "node-gyp-build": "^4.8.4",
     "prettier": "^3.5.3",
     "tree-sitter": "^0.22.4",
-    "tree-sitter-gap": "git://github.com/gap-system/tree-sitter-gap.git#7db79590d2f8b0e0246008ecfd569b4bfca587a9"
+    "tree-sitter-gap": "^0.3.1"
   },
   "devDependencies": {
     "@swc/core": "^1.15.11",
@@ -47,7 +47,20 @@
     "watch": "npm run build -- --watch",
     "watch:test": "NODE_OPTIONS=--experimental-vm-modules jest --watch"
   },
-  "main": "lib/index",
-  "types": "lib/index",
-  "type": "module"
+
+  "type": "module",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"import": "./lib/index.js"
+		}
+	},
+	"files": [
+		"./lib/",
+		"package.json",
+		"LICENSE"
+	]
 }
