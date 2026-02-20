@@ -193,6 +193,8 @@ export function print(
           .slice(0, node.findChildIndexByField("condition"))
           .findLastIndex((child: GapNode) => child.type == "until"),
       );
+    case "comment": // TODO: FIXME: Quick hack
+      return [node.text, hardline]
     case "string": // TODO: FIXME: Multiline strings might be broken if mixed with indentation, test this!
     case "bool":
     case "char":

@@ -75,7 +75,7 @@ export class GapNode {
 
   get children(): GapNode[] {
     return this.internal_node.children
-      .filter((child: SyntaxNode) => child.type != "comment")
+      //.filter((child: SyntaxNode) => child.type != "comment")
       .map((child: SyntaxNode) => new GapNode(child));
   }
 
