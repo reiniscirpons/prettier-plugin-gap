@@ -17,7 +17,7 @@ To test the formatting, first clone and install the project dependencies:
 
 ```bash
 git clone https://github.com/reiniscirpons/prettier-plugin-gap
-cd prettier-plugingap
+cd prettier-plugin-gap
 npm install
 ```
 
@@ -28,7 +28,7 @@ npm run test
 ```
 
 To use the plugin in [`prettier`][prettier], the following
-~~ungodly hack~~ _creative approach to the jacascript ecosystem_
+~~ungodly hack~~ _creative approach to the javascript ecosystem_
 is neccesary:
 
 ```bash
