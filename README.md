@@ -36,7 +36,7 @@ npm run build # This command should generate a ./lib/index.js file
 echo "npx prettier --tab-width=2 --plugin=$PWD/lib/index.js"
 ```
 
-this should build the plugin sources and display an artisially crafted
+this should build the plugin sources and display an artisianally crafted
 command that you can use to call `prettier` using the
 `prettier-plugin-gap`. The remaining usage should be the same as with
 the base `prettier` tool, e.g. :
